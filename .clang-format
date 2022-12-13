@@ -1,0 +1,11 @@
+# 可视化配置clang-format, https://zed0.co.uk/clang-format-configurator/
+
+  BasedOnStyle: Google
+  AlignOperands: true
+  IndentWidth: 4
+  Language: Cpp
+  SpacesInParentheses: false
+  SpacesInSquareBrackets: false
+  Standard: c++11
+  TabWidth: 4
+  UseTab: Always
