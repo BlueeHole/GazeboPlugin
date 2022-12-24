@@ -5,7 +5,8 @@ Ubuntu 20.04 测试通过
 
 ## 功能
 
-目前只能实现最简单的绝对位置控制，模拟车辆运动，因为我要用的功能基本就是这么简单，后面再加
+1. 目前只能实现最简单的绝对位置控制，模拟车辆运动，因为我要用的功能基本就是这么简单，后面再加
+2. 已实现相对位置控制
 
 ## 使用说明
 
@@ -25,7 +26,7 @@ vel_controller.cc -> vel(可执行文件)
 此外，为了让Gazebo（链接器）能找到，需要运行下述命令
 
 ```bash
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~/1_ROS/car_controller/build/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/your_path/build/
 ```
 
 最后，启动gazebo这个世界。
