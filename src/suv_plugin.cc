@@ -43,8 +43,8 @@ class SUVPlugin : public ModelPlugin {
         // 类内一定要加this
         // 10Hz的更新频率
         update_rate_ = 10;
-        speed_interval_ = 0.1 / update_rate_;
-        ang_interval_ = (0.5 / 57.3) / update_rate_;
+        speed_interval_ = 0.2 / update_rate_;
+        ang_interval_ = (2 / 57.3) / update_rate_;
         car_vel_.Set(0, 0, 0);
         car_ang_.Set(0, 0, 0);
         timer_ = ros_node_->createTimer(ros::Duration(1.0 / update_rate_),
@@ -53,7 +53,7 @@ class SUVPlugin : public ModelPlugin {
         set_model_state_client_ =
             ros_node_->serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
 
-        std::cerr << "注册成功!" << std::endl;
+        std::cerr << "-----SUV控制插件加载成功!-----" << std::endl;
     }
 
     void BodyToWorld(const ignition::math::Vector3d& lin, const ignition::math::Vector3d& ang,
@@ -66,39 +66,34 @@ class SUVPlugin : public ModelPlugin {
         q.y() = angular.Y();
         q.z() = angular.Z();
         q.w() = angular.W();
-        Eigen::Matrix3d R = q.normalized().toRotationMatrix().inverse();
+        Eigen::Matrix3d R = q.normalized().toRotationMatrix();
         Eigen::Vector3d angular_world, linear_world;
         Eigen::Vector3d angular_body, linear_body;
+        // Eigen::Matrix3d p_skew;
+        // Eigen::Vector3d p(linear.X(), linear.Y(), linear.Z());
+        // p_skew << 0, -p.z(), p.y(), p.z(), 0, -p.x(), -p.y(), p.x(), 0;
         angular_body.x() = ang.X();
         angular_body.y() = ang.Y();
         angular_body.z() = ang.Z();
         linear_body.x() = lin.X();
         linear_body.y() = lin.Y();
         linear_body.z() = lin.Z();
-        // adjoint representation of T=(R, p), 不知道为什么不对，线速度多出来的那一项到底是啥
+        // adjoint representation of T=(R, p), 书上这个不知道为什么不对，线速度多出来的那一项到底是啥
         angular_world = R * angular_body;
         linear_world = /* p_skew * R * angular_body + */ R * linear_body;
 
-        ang_world.X() = angular_world.x();
-        ang_world.Y() = angular_world.y();
+        ang_world.X() = 0;
+        ang_world.Y() = 0;
         ang_world.Z() = angular_world.z();
         lin_world.X() = linear_world.x();
         lin_world.Y() = linear_world.y();
-        lin_world.Z() = linear_world.z();
-        std::cout << linear_world.x() << " " << linear_world.y() << " " << linear_world.z()
-                  << std::endl;
+        lin_world.Z() = 0;
     }
 
     void timerCallback(const ros::TimerEvent&) { MoveOneStep(car_vel_, car_ang_); }
 
     // 差速模型运动一拍
     void MoveOneStep(const ignition::math::Vector3d& lin, const ignition::math::Vector3d& ang) {
-        // print every 10 times to reduce the output
-        //        static int count = 0;
-        //        if (count++ % 10 == 0) {
-        //            ROS_INFO("car_vel: %f, %f, %f", car_vel_.X(), car_vel_.Y(), car_vel_.Z());
-        //            count = 0;
-        //        }
 
         auto current_pose = this->model->WorldPose();
         ignition::math::Vector3d lin_world, ang_world;
@@ -162,6 +157,7 @@ class SUVPlugin : public ModelPlugin {
             default:
                 break;
         }
+        ROS_INFO("vel: .2%fm/s, ang: %.2fdeg/s", car_vel_.X(), 57.3 * car_ang_.Z());
     }
 
     /// \brief Handle incoming message
