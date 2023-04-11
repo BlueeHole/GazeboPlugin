@@ -5,8 +5,9 @@ Ubuntu 20.04 测试通过
 
 ## 功能
 
-1. 目前只能实现最简单的绝对位置控制，模拟车辆运动，因为我要用的功能基本就是这么简单，后面再加
-2. 已实现相对位置控制
+- [x] 简单的差速模型。使用`w`，`s`控制车辆前后加减速，使用`a`，`d`控制车辆左右旋转。
+- [ ] 更真实的阿克曼车型
+- [ ] 录制和再播放车辆路径（其实不是很需要，用Rosbag即可）
 
 ## 使用说明
 
@@ -29,9 +30,9 @@ vel_controller.cc -> vel(可执行文件)
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/your_path/build/
 ```
 
-最后，启动gazebo这个世界。
+最后，启动gazebo。
 
-然后启动可执行文件`vel`，根据`vel_controller.cc`代码中的switch语句输入指令。`vel`会把指令通过gazebo的通信方式发给`libsuv_plugin`供其执行（Gazebo内置通信用的是[Boost的ASIO](https://mmoaay.gitbooks.io/boost-asio-cpp-network-programming-chinese/content/Chapter1.html)）
+然后在新窗口直接启动可执行文件`vel`，直接输入`w`，`a`，`s`，`d`即可（由于关闭了shell的conical mode，因此不需要回车）。`vel`会把指令通过gazebo的通信方式发给`libsuv_plugin`供其执行（Gazebo内置通信用的是[Boost的ASIO](https://mmoaay.gitbooks.io/boost-asio-cpp-network-programming-chinese/content/Chapter1.html)）
 
 
 
