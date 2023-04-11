@@ -4,6 +4,7 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Int8.h>
+#include <stdio.h>
 
 /////////////////////////////////////////////////
 int main(int argc, char** argv) {
@@ -18,9 +19,10 @@ int main(int argc, char** argv) {
     std::cout << "Q to quit, w,s加减线速度；a,d加减角速度"
                  "type Enter each time."
               << std::endl;
+	system("stty raw");   /*使终端驱动处于一次一字符模式*/
     while (true) {
         c = getchar();
-        if (c == 'Q')
+        if (c == 'q')
             break;
         if (c == '\n')
             continue;
@@ -29,4 +31,5 @@ int main(int argc, char** argv) {
         pub.publish(msg);
         //        std::cout << "sent" << std::endl;
     }
+ 	system("stty cooked");   /*使终端驱动回到一次一行模式*/
 }
